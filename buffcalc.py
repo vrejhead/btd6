@@ -7,27 +7,28 @@ root.geometry("800x320")
 # holy shit so bad lmfao
 multiplier = {"damage": 0, "pierce": 0, "speed": 1}
 
-
+#@param type which type of buff is updates, like towerbuff, herobuff, etc
+#@param change is which specific type, like sbruh in the debuff catagory
 def update(type, change):
     global multiplier
+    #multiplier is the effect of all buffs currently selected
     ispercent = False
     totaldamage = 0
     stats = allvar[type][change].get().split()
     multiplier["damage"] += float(stats[0])
     if "%" in stats[1]:
         ispercent = True
-        #multiplier["pierce"] += towerstat[1]["pierce"].get() * (
-        #    float(stats[1][:-1]) / 100
-        #)
     else:
         multiplier["pierce"] += float(stats[1])
     multiplier["speed"] *= float(stats[2])
+    #update multiplier, though if it has % in the pierce buff set a flag
     for i in range(1, 5):
         if toggle[str(i)].get() and towerstat[str(i)]['speed'] != 0.0:
             temp = towerstat[str(i)]
             output[str(i)]["damage"].config(
                 text=f'{round(multiplier["damage"] + temp["damage"].get())}'
             )
+            #check the flag and update pierce
             if ispercent:
                 output[str(i)]["pierce"].config(
                     text=f'{round(multiplier["damage"] + temp["pierce"].get() * (float(stats[1][:-1])) / 100 + temp["damage"].get(), 4)}'
@@ -36,7 +37,6 @@ def update(type, change):
                 output[str(i)]["pierce"].config(
                     text=f'{round(multiplier["damage"] + temp["damage"].get(), 4)}'
                 )
-            # speed.config(text=f'{round(multiplier["speed"] * towerstat["speed"].get(), 4)}')
             output[str(i)]["speed"].config(
                 text=f'{round((1 / temp["speed"].get()) / multiplier["speed"], 4)}'
             )
@@ -48,11 +48,13 @@ def update(type, change):
                     4,
                 )
             )
+            #totaldamage is the total of all attacks selected/enabled
             totaldamage += float(output[str(i)]["singletarget"]["text"])
     totaldps.config(text=round(totaldamage, 4))
 
 
 # variables
+#tower base stats
 towerstat = {
     "1": {
         "damage": DoubleVar(),
@@ -79,6 +81,7 @@ towerstat = {
         "j": DoubleVar(),
     },
 }
+#all buffs
 allvar = {
     "normalbuff": {
         "pbruh": StringVar(),
@@ -111,13 +114,13 @@ allvar = {
         "brickell": StringVar(),
     },
 }
+#place the buffs in the grid
 for item in allvar:
     for iter in allvar[item]:
         allvar[item][iter].set("0 0 0")
-# outputs
+# outputs, self explainatory
 Label(root, text="damage: ", font=("Arial", 12)).grid(column=3, row=6)
 Label(root, text="pierce: ", font=("Arial", 12)).grid(column=3, row=7)
-# Label(root, text='speed: ', font=('Arial', 12)).grid(column=5, row=7)
 Label(root, text="atk per s:", font=("Arial", 12)).grid(column=3, row=8)
 Label(root, text="single target:", font=("Arial", 12)).grid(column=3, row=9)
 totaldps = Label(root, text="None", font=("Arial", 12))
@@ -162,7 +165,7 @@ Label(root, text="# of proj:", font=("Arial", 12)).grid(column=5, row=4)
 Label(root, text="total dps", font=("Arial", 12)).grid(column=5, row=6)
 Label(root, text="|", font=("Arial", 12)).grid(column=5, row=7)
 Label(root, text="v", font=("Arial", 12)).grid(column=5, row=8)
-# enable calcs
+# toggle to enable attacks
 toggle = {"1": BooleanVar(), "2": BooleanVar(), "3": BooleanVar(), "4": BooleanVar()}
 Checkbutton(
     root,
@@ -188,7 +191,7 @@ Checkbutton(
     onvalue=True,
     offvalue=False,
 ).grid(column=9, row=5)
-# entry
+# entry for the base tower stats
 entries = {
     "1": {
         'damage': Entry(
@@ -234,7 +237,7 @@ entries = {
 for i in range(1, 5):
     for index, item in enumerate(entries[str(i)]):
         entries[str(i)][item].grid(column=i + 5, row=index + 1)
-# checkboxes
+# checkboxes for buffs
 # ordered in [damage, pierce, speed]
 Checkbutton(
     root,
