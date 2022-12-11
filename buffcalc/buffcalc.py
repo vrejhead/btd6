@@ -6,22 +6,21 @@ root.title("bee tee dee six")
 root.geometry("830x360")
 # holy shit so bad lmfao
 multiplier = {"damage": 0, "pierce": 0, "speed": 1}
-
+percents = 0
 # saves the current data to a file
 def save():
     pass
 # @param type which type of buff is updates, like towerbuff, herobuff, etc
 # @param change is which specific type, like sbruh in the debuff catagory
 def update(type, change, allupdate=False):
-    global multiplier
+    global multiplier, percents
     # multiplier is the effect of all buffs currently selected
-    ispercent = False
     totaldamage = 0
     if not allupdate:
         stats = allvar[type][change].get().split()
         multiplier["damage"] += float(stats[0])
         if "%" in stats[1]:
-            ispercent = True
+            percents += int(stats[1][:-1])
         else:
             multiplier["pierce"] += float(stats[1])
         multiplier["speed"] *= float(stats[2])
@@ -34,29 +33,19 @@ def update(type, change, allupdate=False):
                     stats = value.get().split()
                     multiplier["damage"] += float(stats[0])
                     if "%" in stats[1]:
-                        ispercent = True
                         percents += int(stats[1][:-1])
                     else:
                         multiplier["pierce"] += float(stats[1])
                     multiplier["speed"] *= float(stats[2])
-        stats = str(percents) + '%'
-        print(multiplier)
-    # update multiplier, though if it has % in the pierce buff set a flag
     for i in range(1, 5):
         if (toggle[str(i)].get() or allupdate) and (towerstat[str(i)]["speed"].get() != 0.0):
             temp = towerstat[str(i)]
             output[str(i)]["damage"].config(
                 text=f'{round(multiplier["damage"] + temp["damage"].get())}'
             )
-            # check the flag and update pierce
-            if ispercent:
-                output[str(i)]["pierce"].config(
-                    text=f'{round(multiplier["pierce"] + temp["pierce"].get() * (float(stats[1][:-1] if not allupdate else stats[:-1])) / 100, 4)}'
-                )
-            else:
-                output[str(i)]["pierce"].config(
-                    text=f'{round(multiplier["pierce"] + temp["pierce"].get(), 4)}'
-                )
+            output[str(i)]["pierce"].config(
+                text=f'{round(multiplier["pierce"] + temp["pierce"].get() + temp["pierce"].get() * percents / 100, 4)}'
+            )
             output[str(i)]["speed"].config(
                 text=f'{round((1 / temp["speed"].get()) / multiplier["speed"], 4)}'
             )
