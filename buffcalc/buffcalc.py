@@ -51,11 +51,11 @@ def update(type, change, allupdate=False):
             # check the flag and update pierce
             if ispercent:
                 output[str(i)]["pierce"].config(
-                    text=f'{round(multiplier["damage"] + temp["pierce"].get() * (float(stats[1][:-1] if not allupdate else stats[:-1])) / 100 + temp["damage"].get(), 4)}'
+                    text=f'{round(multiplier["pierce"] + temp["pierce"].get() * (float(stats[1][:-1] if not allupdate else stats[:-1])) / 100, 4)}'
                 )
             else:
                 output[str(i)]["pierce"].config(
-                    text=f'{round(multiplier["damage"] + temp["damage"].get(), 4)}'
+                    text=f'{round(multiplier["pierce"] + temp["pierce"].get(), 4)}'
                 )
             output[str(i)]["speed"].config(
                 text=f'{round((1 / temp["speed"].get()) / multiplier["speed"], 4)}'
