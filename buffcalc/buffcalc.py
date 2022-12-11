@@ -10,6 +10,8 @@ percents = 0
 # saves the current data to a file
 def save():
     pass
+
+
 # @param type which type of buff is updates, like towerbuff, herobuff, etc
 # @param change is which specific type, like sbruh in the debuff catagory
 def update(type, change, allupdate=False):
@@ -27,9 +29,9 @@ def update(type, change, allupdate=False):
     else:
         percents = 0
         multiplier = {"damage": 0, "pierce": 0, "speed": 1}
-        for item in ['normalbuff', 'towerbuff', 'debuff', 'herobuff']:
+        for item in ["normalbuff", "towerbuff", "debuff", "herobuff"]:
             for value in allvar[item].values():
-                if value.get()[-1] == '!':
+                if value.get()[-1] == "!":
                     stats = value.get().split()
                     multiplier["damage"] += float(stats[0])
                     if "%" in stats[1]:
@@ -38,7 +40,9 @@ def update(type, change, allupdate=False):
                         multiplier["pierce"] += float(stats[1])
                     multiplier["speed"] *= float(stats[2])
     for i in range(1, 5):
-        if (toggle[str(i)].get() or allupdate) and (towerstat[str(i)]["speed"].get() != 0.0):
+        if (toggle[str(i)].get() or allupdate) and (
+            towerstat[str(i)]["speed"].get() != 0.0
+        ):
             temp = towerstat[str(i)]
             output[str(i)]["damage"].config(
                 text=f'{round(multiplier["damage"] + temp["damage"].get())}'
@@ -122,17 +126,19 @@ allvar = {
         "elizi": StringVar(),
         "brickell": StringVar(),
     },
-    "dummy":{
-        "dummy": StringVar()
-    }
+    "dummy": {"dummy": StringVar()},
 }
-allvar['dummy']['dummy'].set('0 0 1')
+allvar["dummy"]["dummy"].set("0 0 1")
 # attack names
 names = {"1": StringVar(), "2": StringVar(), "3": StringVar(), "4": StringVar()}
 for i in range(1, 5):
-    names[str(i)].set('None')
-    Entry(root, width=10, textvariable=names[str(i)], font=('Arial', 12)).grid(column=i + 5, row=1)
-Label(root, text='attack names: ', font=('Arial', 12)).grid(column=4, row=1, columnspan=2) #columnspan means that it wont affect the other stuff
+    names[str(i)].set("None")
+    Entry(root, width=10, textvariable=names[str(i)], font=("Arial", 12)).grid(
+        column=i + 5, row=1
+    )
+Label(root, text="attack names: ", font=("Arial", 12)).grid(
+    column=4, row=1, columnspan=2
+)  # columnspan means that it wont affect the other stuff
 # place the buffs in the grid
 for item in allvar:
     for iter in allvar[item]:
@@ -274,7 +280,13 @@ for i in range(1, 5):
     for index, item in enumerate(entries[str(i)]):
         entries[str(i)][item].grid(column=i + 5, row=index + 3)
 # button stuff
-Button(root, text='update', bd=5, command=lambda: update('dummy', 'dummy', allupdate=True), font=('Arial', 10)).grid(row=1, column=1, sticky=S)
+Button(
+    root,
+    text="update",
+    bd=5,
+    command=lambda: update("dummy", "dummy", allupdate=True),
+    font=("Arial", 10),
+).grid(row=1, column=1, sticky=S)
 # checkboxes for buffs
 # ordered in [damage, pierce, speed]
 Checkbutton(
@@ -378,7 +390,7 @@ Checkbutton(
     root,
     text="pmfc",
     variable=allvar["towerbuff"]["pmfc"],
-    onvalue="1 3 0.0316",
+    onvalue="1 3 0.0316 !",
     offvalue="-1 -3 31.645569620253163 !",
     command=lambda: update("towerbuff", "pmfc"),
 ).grid(row=6, column=2, sticky=W)
